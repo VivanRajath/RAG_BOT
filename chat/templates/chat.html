@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat - File {{ current_file.id }}</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+  <script src="{% static 'script.js' %}" defer></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    {% if user.is_authenticated %}
+      <span>👋 Welcome, {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+  </div>
+
+  <div class="chat-container">
+
+    <!-- Sidebar: Other Chats -->
+    <aside class="sidebar" id="other-chats">
+      <div class="back-btn">
+        <a href="{% url 'home' %}">⬅ Back to Home</a>
+      </div>
+
+      <h3>📑 Other Uploaded Files</h3>
+      <ul>
+        {% for file in other_files %}
+        <li>
+          <a href="{% url 'chat' file.id %}" 
+             class="{% if file.id == current_file.id %}active{% endif %}">
+            Chat for File {{ file.id }}
+          </a>
+        </li>
+        {% empty %}
+        <li class="empty">No other files yet.</li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-box" id="chat-box">
+      <h2>Chat for File {{ current_file.id }}</h2>
+      <p>
+        📄
+        <a href="{{ current_file.file.url }}" target="_blank">
+          {{ current_file.file.name }}
+        </a>
+      </p>
+
+      <!-- Chat messages -->
+      <div class="messages" id="messages">
+        <div class="message bot-msg">💬 Hi! Type your query about this document.</div>
+      </div>
+
+      <!-- Chat form -->
+      <form id="chat-form">
+        {% csrf_token %}
+        <textarea
+          id="user-input"
+          placeholder="Type a message..."
+          rows="1"
+          required
+        ></textarea>
+        <button type="submit" id="send-btn">Send</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

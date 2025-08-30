@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{% url 'home' %}" class="back-link">⬅ Back to Home</a>
+  </nav>
+
+  <!-- Login Container -->
+  <main class="container">
+    <h1>Login</h1>
+
+    <!-- Username & Password Login -->
+    <form method="POST" class="form-box">
+      {% csrf_token %}
+
+      <label for="id_username">Username</label>
+      <input type="text" name="username" id="id_username" required>
+
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" required>
+
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+
+    <!-- OR Divider -->
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <!-- Google Login -->
+    {% comment %} <div class="google-login">
+      <a href="{% url 'social:begin' 'google' %}" class="btn-google">
+        <img src="{% static 'google-icon.png' %}" alt="Google" class="google-icon">
+        Continue with Google
+      </a>
+    </div> {% endcomment %}
+
+    <!-- Signup Link -->
+    <p class="hint">
+      Don’t have an account? <a href="{% url 'signup' %}">Sign up</a>
+    </p>
+  </main>
+
+</body>
+</html>

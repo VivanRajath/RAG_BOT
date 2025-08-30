@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="{% url 'home' %}">⬅ Back to Home</a>
+  </div>
+
+  <!-- Signup Container -->
+  <div class="container">
+    <h1>Create an Account</h1>
+
+    <form method="POST" class="form-box">
+      {% csrf_token %}
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" placeholder="Enter your username" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" placeholder="Enter your password" required>
+
+      <button type="submit" class="btn-primary">Sign Up</button>
+    </form>
+
+    {% if error %}
+      <p class="error-msg">{{ error }}</p>
+    {% endif %}
+
+    <p class="hint">
+      Already have an account? 
+      <a href="{% url 'login' %}">Login</a>
+    </p>
+  </div>
+</body>
+</html>
