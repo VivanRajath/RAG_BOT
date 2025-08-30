@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8)e!93_6(d66q2y^o3y-pbx$b6b-w0xxo4pr(1fae8bx%4z@nm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["rag-bot-wslw.onrender.com", "localhost", "127.0.0.1"]
 
