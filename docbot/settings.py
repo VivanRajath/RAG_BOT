@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8)e!93_6(d66q2y^o3y-pbx$b6b-w0xxo4pr(1fae8bx%4z@nm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["rag-bot-wslw.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["rag-bot-wslw.onrender.com", "localhost", "127.0.0.1", "VivanRajath.pythonanywhere.com"]
 
 
 # Application definition
@@ -120,9 +120,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_URL = "/static/"
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type

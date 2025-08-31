@@ -83,8 +83,11 @@ def home(request):
 # -------------------- CHAT --------------------
 
 def chat_view(request, file_id):
-    # Get the file; allow anonymous access
-    current_file = get_object_or_404(UploadedFile, id=file_id)
+    # Make sure only the owner can access their file
+    if request.user.is_authenticated:
+        current_file = get_object_or_404(UploadedFile, id=file_id, owner=request.user)
+    else:
+        return redirect("login")  # Force login for chat access
 
     if request.method == "POST":
         query = request.POST.get("query")
@@ -103,27 +106,16 @@ def chat_view(request, file_id):
         except requests.exceptions.RequestException as e:
             print("Error sending to HF backend:", e)
 
-        # Save chat history ONLY if user is logged in
-        if request.user.is_authenticated:
-            ChatHistory.objects.create(
-                user=request.user,
-                file=current_file,
-                query=query,
-                answer=answer
-            )
+        # Save chat history only for logged-in user
+        ChatHistory.objects.create(user=request.user, file=current_file, query=query, answer=answer)
 
         return JsonResponse({"answer": answer})
 
-    # Show chat history only for logged-in users
-    if request.user.is_authenticated:
-        user_history = ChatHistory.objects.filter(user=request.user, file=current_file)
-        other_files = UploadedFile.objects.filter(owner=request.user).exclude(id=current_file.id)
-    else:
-        user_history = []
-        other_files = []
+    # Show chat history only for the logged-in user
+    user_history = ChatHistory.objects.filter(user=request.user, file=current_file)
 
     return render(request, "chat.html", {
         "current_file": current_file,
-        "other_files": other_files,
+        "other_files": UploadedFile.objects.filter(owner=request.user).exclude(id=current_file.id),
         "chat_history": user_history
     })

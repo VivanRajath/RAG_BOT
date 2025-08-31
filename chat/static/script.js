@@ -64,3 +64,44 @@ function getCSRFToken() {
     }
     return cookieValue;
 }
+
+    // File input enhancement
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        // Add visual feedback when file is selected
+        this.style.borderColor = '#10b981';
+        this.style.background = 'rgba(16, 185, 129, 0.1)';
+        
+        // Reset after a moment
+        setTimeout(() => {
+          this.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+          this.style.background = 'rgba(15, 15, 35, 0.4)';
+        }, 2000);
+      }
+    });
+
+    // Add loading state to upload button
+    document.querySelector('.btn-primary-custom').addEventListener('click', function(e) {
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput.files.length === 0) {
+        e.preventDefault();
+        alert('Please select a file to upload.');
+        return;
+      }
+      
+      // Add loading state
+      this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+      this.disabled = true;
+    });
+
+    // Enhanced hover effects
+    document.querySelector('.upload-container').addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.4)';
+    });
+
+    document.querySelector('.upload-container').addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+      this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+    });
