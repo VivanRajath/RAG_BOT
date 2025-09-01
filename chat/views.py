@@ -83,17 +83,17 @@ def home(request):
 # -------------------- CHAT --------------------
 
 def chat_view(request, file_id):
-    # Make sure only the owner can access their file
+    # If user is logged in, only allow them to access their own file
     if request.user.is_authenticated:
         current_file = get_object_or_404(UploadedFile, id=file_id, owner=request.user)
     else:
-        return redirect("login")  # Force login for chat access
+        # For anonymous users, allow access to file without owner check
+        current_file = get_object_or_404(UploadedFile, id=file_id)
 
     if request.method == "POST":
         query = request.POST.get("query")
         answer = "I couldn't find that in the document."
 
-        # Send query to HF backend safely
         try:
             with open(current_file.file.path, "rb") as f:
                 files = {"file": f}
@@ -106,16 +106,17 @@ def chat_view(request, file_id):
         except requests.exceptions.RequestException as e:
             print("Error sending to HF backend:", e)
 
-        # Save chat history only for logged-in user
-        ChatHistory.objects.create(user=request.user, file=current_file, query=query, answer=answer)
+        # Save history only if user is logged in
+        if request.user.is_authenticated:
+            ChatHistory.objects.create(user=request.user, file=current_file, query=query, answer=answer)
 
         return JsonResponse({"answer": answer})
 
-    # Show chat history only for the logged-in user
-    user_history = ChatHistory.objects.filter(user=request.user, file=current_file)
+    # Show history only if logged in
+    user_history = ChatHistory.objects.filter(user=request.user, file=current_file) if request.user.is_authenticated else []
 
     return render(request, "chat.html", {
         "current_file": current_file,
-        "other_files": UploadedFile.objects.filter(owner=request.user).exclude(id=current_file.id),
+        "other_files": UploadedFile.objects.filter(owner=request.user).exclude(id=current_file.id) if request.user.is_authenticated else [],
         "chat_history": user_history
     })
